@@ -46,26 +46,6 @@ class MyApp : RackApp {
 }
 
 int main() {
-    /*
-    auto callback = function (MongooseRequest request) {
-        writeln(request.getHeaders());
-
-        writeln(request.getHeader("User-Agent"));
-
-        writeln(request.requestMethod);
-        writeln(request.uri);
-        writeln(request.queryString);
-
-        request.addHeader("Content-Type", "application/json");
-        request.setStatus(200);
-
-        request.write("{ \"msg\": \"Bua!\" }");
-    };
-    */
-
-    //auto fn = delegate() { return new AeHttp(); };
-    //Rack.adapterFactories["ae_http"] = fn;
-    //Rack.registerAdapter("ae_http", fn);
 
     Rack.registerAdapter("ae_http", {
         return new AeHttp();
@@ -92,38 +72,10 @@ int main() {
     // future api:
     Rack.startServer("ae_http", rack, 8080);
     Rack.startServer("ae_http", new MyApp, 8080);
+    Rack.startServer("ae_http", 8080, {
+        return [200, [], "Content"];
+    });
     */
-/*
-    auto server = new Mongoose("default", rack);
-    server.setPort(8080);
-
-    // Serve request. Hit Ctrl-C to terminate the program
-    writeln("Server starting at 127.0.0.1:8080");
-    server.start();
-
-    writeln("Waiting..");
-
-    string value;
-    readf("%s", &value);
-
-    server.destroy();
-*/
-    /*
-  mg_server *server;
-
-  // Create and configure the server
-  server = mg_create_server(cast(void*)null, &ev_handler);
-  mg_set_option(server, toCstring("listening_port"), toCstring("8080"));
-
-  // Serve request. Hit Ctrl-C to terminate the program
-  printf("Starting on port %s\n", mg_get_option(server, toCstring("listening_port")));
-  for (;;) {
-    mg_poll_server(server, 1000);
-  }
-
-  // Cleanup, and free server instance
-  mg_destroy_server(&server);
-  */
   
   return 0;
 }
