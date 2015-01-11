@@ -2,8 +2,10 @@ module rack;
 
 import core.thread;
 import std.array;
-import std.stdio;
+import std.string;
 import std.concurrency;
+
+import webadapter.utils;
 
 /*
 void addShutdownHandler(void delegate() fn)
@@ -26,12 +28,15 @@ class Rack {
         adapterFactories[name] = fn;
     }
 
-    static RackAdapter initServer(string name) {
+    static RackAdapter initServer(string adapter_name) {
         RackAdapter server;
         foreach(key, fn; adapterFactories) {
-            if (key == name) {
+            if (key == adapter_name) {
                 server = fn();
             }
+        }
+        if (server is null) {
+            throw new ArgumentError(format("Can not find adapter: %s", adapter_name));
         }
         return server;
     }

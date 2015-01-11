@@ -1,13 +1,14 @@
 
-//import webadapter;
-import ae_http;
-import mongoose;
-//import mongoose_binding;
-import rack;
-//import rack;
+import adapters.ae_http;
+import adapters.mongoose;
+import adapters.vibe;
 
-import std.stdio;
+import rack;
+
+import webadapter.utils;
+
 import std.string;
+import std.getopt;
 
 //import std.functional;
 
@@ -45,7 +46,7 @@ class MyApp : RackApp {
     }
 }
 
-int main() {
+int main(string[] args) {
 
     Rack.registerAdapter("ae_http", {
         return new AeHttp();
@@ -55,17 +56,29 @@ int main() {
         return new Mongoose();
     });
 
-    writeln(Rack.adapterFactories);
+    Rack.registerAdapter("vibe", {
+        return new VibeHttp();
+    });
+
+    string server_name = "vibe";
+    getopt(args, "server",  &server_name);
 
     auto rack = new Rack();
     rack.setApplication(new MyApp);
 
     //auto server = Rack.initServer("ae_http")
-    auto server = Rack.initServer("mongoose");
+    RackAdapter server;
+    try {
+        server = Rack.initServer(server_name);
+    } catch (ArgumentError error) {
+        puts("ERROR: ", error.msg);
+        puts("Available: ", Rack.adapterFactories.keys.join(", "));
+        return 1;
+    }
+
     server.setHandler(rack);
     server.setPort(8080);
-    writeln(server);
-    writeln("Server starting at 127.0.0.1:8080");
+    writefln("Starting server '%s' at 127.0.0.1:8080", server_name);
     server.start();
 
     /*

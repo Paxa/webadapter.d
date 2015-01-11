@@ -6,7 +6,10 @@
   "libs-posix": ["mongoose"],
   "buildRequirements": ["allowWarnings"],
 
+  "versions": ["VibeCustomMain"],
+
   "dependencies": {
+    "vibe-d": "0.7.21",
     "ae:net-http-server": {
       "path": "../ae",
       "optional": true
